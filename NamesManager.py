@@ -48,6 +48,8 @@ class NamesManager:
         print(max_frequency)
         return result
 
-file = NamesManager("mena.csv")
-file.read_data()
-print(file.most_favourite_name_historically())
+def uloha_4():
+    names_manager = NamesManager("mena.csv")
+    names_manager.read_data()
+    print(names_manager.most_favourite_name("2014"))
+    print(names_manager.most_favourite_name_historically())
