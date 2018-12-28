@@ -1,8 +1,8 @@
 class NamesManager:
     def __init__(self, filename):
-        self.filename = filename
-        self.names = {}
-        self.sum_names = {}
+        self.filename = filename        #dictionary: kĺúč --> hodnota
+        self.names = {}                 #dictionary: mená --> slovník: roky --> výskyty
+        self.sum_names = {}             #dictionary: mená --> súčet výskytov
 
     def read_data(self):
         with open(self.filename) as f:
@@ -21,7 +21,7 @@ class NamesManager:
                     self.names[name_line[0]] = name_frequency_by_year
                     self.sum_names[name_line[0]] = name_line[-1]
 
-    def most_favourite_name(self, year):
+    def most_favourite_name(self, year):            #najpopulárnejšie meno v zadanom roku
         max_frequency = 0
         result = []
         for name in self.names:
@@ -34,7 +34,7 @@ class NamesManager:
                 result.append(name)
         return result
 
-    def most_favourite_name_historically(self):
+    def most_favourite_name_historically(self):     #historicky najpopulárnejšie meno
         max_frequency = 0
         result = []
         for name in self.sum_names:
