@@ -1,0 +1,35 @@
+from PIL import Image
+
+def is_black(x, y, black):
+    radiuses = [38, 77, 116, 155]       #polomery kružníc
+    distance = (x**2 + y**2)**(1/2)
+    result = black
+    for radius in radiuses:
+        if distance < radius:           #invertovanie farieb
+            return result
+        else:
+            result = not result
+    return result
+    
+
+
+def picture():
+    squares = 25
+    a = 15
+    pixels = squares*a
+    half_pixels = pixels//2 + 1
+    image = Image.new("L", (pixels, pixels))
+    for x in range(squares):
+        black = (x % 2 == 0)
+        for y in range(squares):
+            for i in range(a):
+                for j in range(a):
+                    posx = x*a+i
+                    posy = y*a+j
+                    image.putpixel((posx,posy), 0 if is_black(posx - half_pixels, posy - half_pixels, black) else 255)  #if v parametri, ktorý farbí polia 
+            black = not black               #boolean switch
+    image.save("picture.png")
+    image.show()                            #obrázok sa uložil, ale pre istotu ho aj ukážem
+
+
+picture()
