@@ -1,0 +1,71 @@
+import math
+import svgwrite 
+
+class SvgTurtle:
+    def __init__(self, dwg, posx, posy):
+        self.dwg = dwg
+        self.x = posx
+        self.y = posy
+
+    def draw_line(self, posx, posy):
+        self.dwg.add(self.dwg.line((self.x, self.y), (posx, posy),  stroke=svgwrite.rgb(10, 10, 16, '%')))
+        self.x = posx
+        self.y = posy
+        self.dwg.save()
+
+    def step_to(self, step, posx, posy):
+        if self.y == posy:
+            deltay = 0
+            deltax = step
+        else:
+            a = abs(self.x - posx) / abs(self.y - posy)
+            deltay = math.sqrt(step**2 / (a**2 + 1))
+            deltax = a * deltay
+        if posy < self.y:
+            deltay *= -1
+        if posx < self.x:
+            deltax *= -1
+        newy = self.y + deltay
+        newx = self.x + deltax
+        self.draw_line(newx, newy)
+
+    def step_on_circle(self, step, radius):
+        degree = 2 * math.pi / 360 * step
+        newx = (self.x - radius) * math.cos(degree) + (self.y - radius) * math.sin(degree)
+        newy = -1 * (self.x - radius) * math.sin(degree) + (self.y - radius) * math.cos(degree)
+        self.x = newx + radius
+        self.y = newy + radius
+        
+
+def start_turtle_race():
+    dwg = svgwrite.Drawing('test.svg', profile='tiny', size=(500, 500))
+    turtle_race(dwg, 10)
+
+def start_turtle_circle():
+    dwg = svgwrite.Drawing('test.svg', profile='tiny', size=(500, 500))
+    turtle_circle(dwg)
+
+def turtle_race(dwg, step):
+    main_turtle = SvgTurtle(dwg, 10, 250)
+    turtle1 = SvgTurtle(dwg, 20, 200)
+    turtle_positions = [(20, 200), (40, 150), (60, 100), (80, 50),
+                        ]
+    turtles = []
+    for turtle_position in turtle_positions:
+        turtles.append(SvgTurtle(dwg, turtle_position[0], turtle_position[1]))
+    for i in range(20, 500, step):
+        main_turtle.draw_line(i, 250)
+        for turtle in turtles:
+            turtle.step_to(step, main_turtle.x, main_turtle.y)
+
+def turtle_circle(dwg):
+    turtle1 = SvgTurtle(dwg, 250, 450)
+    turtle2 = SvgTurtle(dwg, 250, 450)
+    for i in range(170):
+        turtle1.step_on_circle(7, 250)      
+        turtle2.step_on_circle(8, 250)
+        dwg.add(dwg.line((turtle1.x, turtle1.y), (turtle2.x, turtle2.y),  stroke=svgwrite.rgb(10, 10, 16, '%')))
+    dwg.save()
+
+#start_turtle_race()
+#start_turtle_circle()                      #remove hashtag to start drawing
